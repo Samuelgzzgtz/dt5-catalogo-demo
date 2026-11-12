@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DT5 Editorial | Catálogo de libros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf7f1;
+    --surface: #ffffff;
+    --ink: #1a1f2e;
+    --soft: #5b5f6b;
+    --line: #e7e1d8;
+    --blue: #1b3f8f;
+    --blue-2: #2563eb;
+    --orange: #f97316;
+    --orange-text: #c2410c;
+    --display: "Fredoka", system-ui, sans-serif;
+    --body: "Nunito", system-ui, sans-serif;
+    /* Movimiento: entrar despacio, salir más rápido. */
+    --ease-out: cubic-bezier(.22, 1, .36, 1);
+    --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+    --t-fast: .2s;
+    --t-enter: .5s;
+    --t-exit: .3s;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: transparent; margin: 0; }
+  .site {
+    background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body);
+    border-radius: var(--radius, 12px); padding: 24px 32px 48px; overflow: hidden; position: relative;
+  }
+  :focus-visible { outline: 3px solid var(--blue-2); outline-offset: 3px; border-radius: 6px; }
+  button { font: inherit; color: inherit; }
+
+  /* Encabezado */
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .brand { font: 600 28px var(--display); color: var(--blue); text-decoration: none; }
+  .brand span { color: var(--orange); }
+  .top .link { color: var(--blue); font-weight: 700; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 16px; min-height: 300px; }
+  h1 { font: 600 clamp(38px, 6.4vw, 58px)/1.05 var(--display); margin: 0 0 16px; color: var(--blue); }
+  h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .1em; margin-bottom: -.1em; }
+  h1 .w > span { display: inline-block; transform: translateY(110%); animation: rise .8s var(--ease-out) forwards; }
+  h1 em { font-style: normal; color: var(--orange); }
+  .lead { font-size: 18px; color: var(--soft); max-width: 34ch; margin: 0 0 24px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .lead, .hero-actions { opacity: 0; animation: fade .7s var(--ease-out) forwards; }
+  .lead { animation-delay: .45s; }
+  .hero-actions { animation-delay: .55s; }
+  @keyframes rise { to { transform: none; } }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .fan { position: relative; height: 260px; }
+  .fan::before {
+    content: ""; position: absolute; left: 50%; top: 50%; width: 220px; height: 220px; margin: -110px 0 0 -110px;
+    border-radius: 50%; background: #fde3cf; transform: scale(0); animation: pop .8s .3s var(--ease-spring) forwards;
+  }
+  @keyframes pop { to { transform: scale(1); } }
+  .fan .cover {
+    position: absolute; left: 50%; top: 50%; width: 120px; height: 160px; margin: -80px 0 0 -60px; opacity: 0;
+    animation: deal .9s var(--ease-spring) forwards, float 6s ease-in-out infinite;
+  }
+  .fan .cover:nth-child(1) { --r: -15deg; --x: -72px; animation-delay: .45s, 1.4s; }
+  .fan .cover:nth-child(2) { --r: 3deg;   --x: 0px;   animation-delay: .53s, 1.9s; z-index: 2; }
+  .fan .cover:nth-child(3) { --r: 17deg;  --x: 72px;  animation-delay: .61s, 2.4s; }
+  @keyframes deal {
+    from { opacity: 0; transform: translate(0, 60px) rotate(0deg) scale(.8); }
+    to   { opacity: 1; transform: translate(var(--x), 0) rotate(var(--r)); }
+  }
+  @keyframes float { 0%,100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+
+  /* Botones */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px;
+    border: 0; border-radius: 999px; font: 700 16px var(--body); text-decoration: none; cursor: pointer;
+    transition: transform var(--t-fast) var(--ease-spring);
+  }
+  .btn:active { transform: scale(.96); }
+  .btn.primary { background: var(--orange); color: var(--ink); }
+  .btn.outline { background: transparent; color: var(--blue); box-shadow: inset 0 0 0 2px var(--blue); }
+  .btn svg { width: 20px; height: 20px; flex: none; }
+
+  /* Portada de libro: se usa en el hero, la cuadrícula y el visor. */
+  .cover {
+    position: relative; overflow: hidden; border-radius: 4px 10px 10px 4px; color: #fff;
+    background: linear-gradient(155deg, var(--c1), var(--c2));
+    box-shadow: inset 7px 0 0 rgba(0,0,0,.16), 0 14px 24px -12px rgba(26,31,46,.45);
+    display: flex; flex-direction: column; justify-content: space-between; padding: 12% 11%;
+    container-type: inline-size;
+  }
+  .cover::after { /* Círculo de acento: naranja en portadas frías, azul en cálidas. */
+    content: ""; position: absolute; right: -18%; top: 22%; width: 62%; aspect-ratio: 1; border-radius: 50%;
+    background: var(--dot); opacity: .9;
+  }
+  .cover .logo { position: relative; z-index: 1; font: 600 11cqi/1 var(--display); }
+  .cover .grade { position: relative; z-index: 1; font: 600 42cqi/.9 var(--display); }
+  .cover .subject { position: relative; z-index: 1; font: 700 11cqi/1.1 var(--body); }
+
+  /* Catálogo */
+  .catalog-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 40px 0 8px; }
+  h2 { font: 600 30px/1.1 var(--display); color: var(--blue); margin: 0; }
+  .count { color: var(--soft); font-weight: 600; }
+  .filters { display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .subjects { display: flex; flex-wrap: wrap; gap: 0 20px; }
+  .subjects button {
+    position: relative; background: none; border: 0; padding: 0; min-height: 48px; cursor: pointer;
+    font-weight: 700; color: var(--soft); transition: color var(--t-fast);
+  }
+  .subjects button::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; border-radius: 3px;
+    background: var(--orange); transform: scaleX(0); transition: transform .35s var(--ease-out);
+  }
+  .subjects button[aria-pressed="true"] { color: var(--blue); }
+  .subjects button[aria-pressed="true"]::after { transform: scaleX(1); }
+  .grade-filter { display: flex; align-items: center; gap: 8px; font-weight: 700; padding: 6px 0; }
+  .grade-filter select {
+    font: 600 15px var(--body); color: var(--ink); background: var(--surface); border: 1.5px solid var(--line);
+    border-radius: 10px; min-height: 44px; padding: 0 12px; cursor: pointer;
+  }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 32px 24px; }
+  .item { all: unset; cursor: pointer; display: block; opacity: 0; transform: translateY(20px) scale(.97); }
+  .item.in { opacity: 1; transform: none; transition: opacity .55s var(--ease-out), transform .55s var(--ease-out); }
+  .item[hidden] { display: none; }
+  .book { perspective: 900px; aspect-ratio: 3 / 4; }
+  .book-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform var(--t-enter) var(--ease-out); }
+  .book .pages {
+    position: absolute; inset: 3px 2px 3px 6px; border-radius: 2px 8px 8px 2px;
+    background: repeating-linear-gradient(90deg, #fff 0 2px, #ece6da 2px 3px);
+    box-shadow: 0 20px 30px -14px rgba(26,31,46,.45);
+  }
+  .book .cover { position: absolute; inset: 0; transform-origin: left center; transition: transform .6s var(--ease-out); backface-visibility: hidden; }
+  .meta { margin-top: 12px; }
+  .meta strong { display: block; font: 600 17px/1.2 var(--display); }
+  .meta span { font-size: 14px; color: var(--soft); }
+  .item:focus-visible { outline: none; }
+  .item:focus-visible .book { outline: 3px solid var(--blue-2); outline-offset: 6px; border-radius: 10px; }
+  .item:focus-visible .book .cover { transform: rotateY(-28deg); }
+  @media (hover: hover) { .item:hover .book .cover { transform: rotateY(-28deg); } }
+  .empty { color: var(--soft); font-weight: 600; padding: 24px 0; margin: 0; }
+
+  /* Visor: portada y primeras páginas */
+  .overlay {
+    position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 16px;
+    background: rgba(15,37,87,.72); opacity: 0; pointer-events: none; transition: opacity var(--t-exit) ease;
+  }
+  .overlay.open { opacity: 1; pointer-events: auto; transition-duration: var(--t-enter); }
+  .panel {
+    position: relative; width: min(780px, 100%); max-height: calc(100% - 8px); overflow: auto;
+    background: var(--surface); border-radius: 16px; padding: 28px;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start;
+    transform: translateY(16px) scale(.98); transition: transform var(--t-exit) ease-in;
+  }
+  .overlay.open .panel { transform: none; transition: transform var(--t-enter) var(--ease-out); }
+
+  .pager { position: relative; aspect-ratio: 3 / 4; perspective: 1400px; touch-action: pan-y; user-select: none; cursor: pointer; }
+  .page {
+    position: absolute; inset: 0; border-radius: 4px 10px 10px 4px; background: #fff; overflow: hidden;
+    box-shadow: 0 0 0 1px var(--line), 0 18px 34px -16px rgba(26,31,46,.5);
+    transform-origin: left center; transition: transform .6s var(--ease-out), opacity .6s var(--ease-out);
+    backface-visibility: hidden;
+  }
+  .page.gone { transform: rotateY(-115deg); opacity: 0; }
+  .page.cover { background: linear-gradient(155deg, var(--c1), var(--c2)); }
+  .page .inner { padding: 12% 10%; height: 100%; display: flex; flex-direction: column; gap: 5%; container-type: inline-size; }
+  .page h4 { margin: 0; font: 600 9cqi/1.1 var(--display); color: var(--blue); }
+  .page .bar { height: 2.6cqi; border-radius: 9px; background: #e9e4dc; }
+  .page .bar.s { width: 60%; }
+  .page .art { flex: 1; border-radius: 10px; background: linear-gradient(135deg, var(--c1), var(--c2)); opacity: .85; }
+  .page .boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 6%; flex: 1; }
+  .page .boxes div { border: 2px dashed #d9d2c6; border-radius: 10px; }
+  .page .folio { margin-top: auto; text-align: center; font-size: 4cqi; color: var(--soft); }
+
+  .pager-nav { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+  .pager-nav button {
+    width: 48px; height: 48px; border-radius: 50%; border: 0; display: grid; place-items: center; cursor: pointer;
+    background: #eef2fb; color: var(--blue); transition: transform var(--t-fast) var(--ease-spring), opacity var(--t-fast);
+  }
+  .pager-nav button:disabled { opacity: .35; cursor: default; }
+  .pager-nav button svg { width: 22px; height: 22px; }
+  .pager-nav .pos { font-weight: 700; color: var(--soft); }
+
+  .info { display: flex; flex-direction: column; gap: 12px; padding-top: 4px; }
+  .info > * { opacity: 0; transform: translateY(8px); transition: opacity var(--t-exit), transform var(--t-exit); }
+  .overlay.open .info > * { opacity: 1; transform: none; transition: opacity var(--t-enter) var(--ease-out), transform var(--t-enter) var(--ease-out); }
+  .overlay.open .info > *:nth-child(1) { transition-delay: .15s; }
+  .overlay.open .info > *:nth-child(2) { transition-delay: .2s; }
+  .overlay.open .info > *:nth-child(3) { transition-delay: .25s; }
+  .overlay.open .info > *:nth-child(4) { transition-delay: .3s; }
+  .overlay.open .info > *:nth-child(5) { transition-delay: .35s; }
+  .info .kicker { color: var(--orange-text); font-weight: 700; margin: 0; }
+  .info h3 { font: 600 32px/1.1 var(--display); color: var(--blue); margin: 0; }
+  .info p { margin: 0; color: var(--soft); }
+  .info .hint { font-size: 14px; }
+  .info .btn { align-self: flex-start; margin-top: 8px; }
+
+  .close {
+    position: absolute; top: 12px; right: 12px; z-index: 2; width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; border: 0; background: #f2efe9; color: var(--ink); cursor: pointer;
+    transition: transform var(--t-fast) var(--ease-spring);
+  }
+  .close svg { width: 20px; height: 20px; }
+  @media (hover: hover) {
+    .btn:hover, .pager-nav button:not(:disabled):hover { transform: translateY(-2px); }
+    .close:hover { transform: rotate(90deg); }
+    .subjects button:hover { color: var(--blue); }
+  }
+
+  @media (max-width: 600px) {
+    .site { padding: 20px 18px 36px; }
+    .hero { grid-template-columns: 1fr; }
+    .fan { height: 220px; order: -1; }
+    .filters { flex-direction: column; align-items: stretch; }
+    .subjects { gap: 0 16px; }
+    .panel { grid-template-columns: 1fr; padding: 64px 20px 20px; gap: 16px; }
+    .pager { width: min(100%, 280px); margin: 0 auto; }
+    .info h3 { font-size: 26px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
+  }
+</style>
+</head>
+<body>
+<div class="site">
+  <header class="top">
+    <a class="brand" href="#" aria-label="DT5 inicio">DT<span>5</span></a>
+    <a class="link" href="#">Pedir informes</a>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1 id="title">Libros para aprender <em>grado a grado</em></h1>
+      <p class="lead">Mira la portada y hojea las primeras páginas de cada libro antes de pedirlo.</p>
+      <div class="hero-actions">
+        <a class="btn outline" href="#libros">Ver libros</a>
+        <a class="btn primary" href="#">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a17 17 0 0 1-1.7-.6 13.4 13.4 0 0 1-5.1-4.5c-.4-.5-1.1-1.6-1.1-3s.8-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2.1 1c.3.2.5.2.6.4 0 .1 0 .7-.2 1.3Z"/></svg>
+          Pedir informes
+        </a>
+      </div>
+    </div>
+    <div class="fan" id="fan" aria-hidden="true"></div>
+  </section>
+
+  <div class="catalog-head">
+    <h2 id="libros">Nuestros libros</h2>
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+  <div class="filters">
+    <div class="subjects" id="subjects" role="group" aria-label="Materia"></div>
+    <label class="grade-filter">Grado
+      <select id="grade">
+        <option value="">Todos</option>
+        <option value="1">1° primaria</option><option value="2">2° primaria</option><option value="3">3° primaria</option>
+        <option value="4">4° primaria</option><option value="5">5° primaria</option><option value="6">6° primaria</option>
+      </select>
+    </label>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty" hidden>Todavía no hay libros con esos filtros.</p>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="v-title" inert>
+    <div class="panel">
+      <button class="close" id="close" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+      <div>
+        <div class="pager" id="pager"></div>
+        <div class="pager-nav">
+          <button id="prev" aria-label="Página anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <span class="pos" id="pos" aria-live="polite"></span>
+          <button id="next" aria-label="Página siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="info">
+        <p class="kicker" id="v-kicker"></p>
+        <h3 id="v-title"></h3>
+        <p id="v-sum"></p>
+        <p class="hint">Toca la página, deslízala o usa las flechas para hojear.</p>
+        <a class="btn primary" href="#">Pedir este libro</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Colores por materia dentro de la paleta DT5 (azul y naranja como base).
+  const SUBJECTS = {
+    "Matemáticas": { c1: "#2563eb", c2: "#1b3f8f", dot: "#f97316" },
+    "Español":     { c1: "#c2410c", c2: "#9a3412", dot: "#1b3f8f" },
+    "Ciencias":    { c1: "#0e7490", c2: "#155e75", dot: "#f97316" },
+    "Historia":    { c1: "#b45309", c2: "#78350f", dot: "#2563eb" },
+    "Inglés":      { c1: "#1e3a8a", c2: "#0f2557", dot: "#fb923c" },
+  };
+  // Datos de ejemplo. En la versión real salen de los PDFs que subes.
+  const GRADES = { "Matemáticas": [1,2,3,4,5,6], "Español": [1,2,3,4,5,6], "Ciencias": [3,4,5,6], "Historia": [4,5,6], "Inglés": [1,2,3] };
+  const SUMMARY = {
+    "Matemáticas": "Problemas del día a día para practicar operaciones, medición y razonamiento paso a paso.",
+    "Español": "Lecturas, escritura guiada y actividades de comprensión pensadas para el grado.",
+    "Ciencias": "Experimentos sencillos y preguntas para entender el cuerpo, la naturaleza y la materia.",
+    "Historia": "Líneas del tiempo, mapas y relatos para conocer el pasado de México.",
+    "Inglés": "Vocabulario, canciones y diálogos cortos para empezar a comunicarse.",
+  };
+  const books = Object.entries(GRADES).flatMap(([s, gs]) => gs.map(g => ({ subject: s, grade: g, title: `${s} ${g}°` })));
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const coverVars = b => { const c = SUBJECTS[b.subject]; return `--c1:${c.c1};--c2:${c.c2};--dot:${c.dot}`; };
+  const coverBody = b => `<span class="logo">DT5</span><span class="grade">${b.grade}°</span><span class="subject">${b.subject}</span>`;
+  const coverHTML = b => `<div class="cover" style="${coverVars(b)}">${coverBody(b)}</div>`;
+
+  // Título palabra por palabra.
+  const title = document.getElementById("title");
+  [...title.childNodes].forEach(n => {
+    const parts = n.nodeType === 3 ? n.textContent.split(/(\s+)/) : [n];
+    const frag = document.createDocumentFragment();
+    parts.forEach(w => {
+      if (typeof w === "string" && !w.trim()) { frag.append(w); return; }
+      const outer = document.createElement("span"); outer.className = "w";
+      const inner = document.createElement("span");
+      inner.append(typeof w === "string" ? w : w.cloneNode(true));
+      outer.append(inner); frag.append(outer);
+    });
+    n.replaceWith(frag);
+  });
+  title.querySelectorAll(".w > span").forEach((s, i) => s.style.animationDelay = `${i * 0.08}s`);
+
+  document.getElementById("fan").innerHTML = [books[2], books[8], books[13]].map(coverHTML).join("");
+
+  // Cuadrícula.
+  const grid = document.getElementById("grid");
+  const items = books.map(b => {
+    const el = document.createElement("button");
+    el.className = "item";
+    el.innerHTML = `<div class="book" aria-hidden="true"><div class="book-inner"><div class="pages"></div>${coverHTML(b)}</div></div>
+      <div class="meta"><strong>${b.title}</strong><span>Primaria</span></div>`;
+    const inner = el.querySelector(".book-inner");
+    el.addEventListener("pointermove", e => {
+      if (e.pointerType !== "mouse" || reduceMotion) return;
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      inner.style.transform = `rotateX(${-y * 10}deg) rotateY(${x * 14}deg) translateY(-6px)`;
+    });
+    el.addEventListener("pointerleave", () => inner.style.transform = "");
+    el.addEventListener("click", () => openViewer(b, el));
+    grid.append(el);
+    return { b, el };
+  });
+
+  // Entrada escalonada de los libros visibles (cada vez que cambia el filtro).
+  function reveal(list, baseDelay) {
+    list.forEach(({ el }) => el.classList.remove("in"));
+    grid.offsetWidth;
+    list.forEach(({ el }, i) => {
+      el.style.transitionDelay = `${baseDelay + Math.min(i, 12) * 0.04}s`;
+      el.classList.add("in");
+    });
+  }
+
+  // Filtros por materia y grado.
+  let subject = "", grade = "";
+  const subjectsEl = document.getElementById("subjects");
+  ["Todas", ...Object.keys(SUBJECTS)].forEach((s, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = s;
+    btn.setAttribute("aria-pressed", i === 0);
+    btn.onclick = () => {
+      subjectsEl.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === btn));
+      subject = i === 0 ? "" : s;
+      applyFilters();
+    };
+    subjectsEl.append(btn);
+  });
+  document.getElementById("grade").onchange = e => { grade = e.target.value; applyFilters(); };
+
+  function applyFilters(baseDelay = 0) {
+    const visible = items.filter(({ b }) => (!subject || b.subject === subject) && (!grade || b.grade == grade));
+    items.forEach(it => it.el.hidden = !visible.includes(it));
+    document.getElementById("count").textContent = `${visible.length} ${visible.length === 1 ? "libro" : "libros"}`;
+    document.getElementById("empty").hidden = visible.length > 0;
+    reveal(visible, baseDelay);
+  }
+  applyFilters(.6);
+
+  // Visor.
+  const overlay = document.getElementById("overlay");
+  const pager = document.getElementById("pager");
+  let trigger = null, page = 0, pages = [];
+
+  // Páginas de muestra. En la versión real son imágenes de las primeras páginas del PDF.
+  function samplePages(b) {
+    const bars = n => Array.from({ length: n }, (_, i) => `<div class="bar${i === n - 1 ? " s" : ""}"></div>`).join("");
+    return [
+      `<div class="page cover" style="${coverVars(b)}">${coverBody(b)}</div>`,
+      `<div class="page"><div class="inner"><h4>Índice</h4>${bars(7)}<span class="folio">3</span></div></div>`,
+      `<div class="page" style="${coverVars(b)}"><div class="inner"><h4>Lección 1</h4>${bars(3)}<div class="art"></div>${bars(2)}<span class="folio">4</span></div></div>`,
+      `<div class="page"><div class="inner"><h4>Practica</h4>${bars(2)}<div class="boxes"><div></div><div></div><div></div><div></div></div><span class="folio">5</span></div></div>`,
+    ];
+  }
+
+  function showPage(n) {
+    page = Math.max(0, Math.min(n, pages.length - 1));
+    pages.forEach((p, i) => p.classList.toggle("gone", i < page));
+    document.getElementById("pos").textContent = page === 0 ? "Portada" : `Página ${page} de ${pages.length - 1}`;
+    document.getElementById("prev").disabled = page === 0;
+    document.getElementById("next").disabled = page === pages.length - 1;
+  }
+
+  function openViewer(b, from) {
+    trigger = from;
+    document.getElementById("v-kicker").textContent = `${b.subject}, ${b.grade}° de primaria`;
+    document.getElementById("v-title").textContent = b.title;
+    document.getElementById("v-sum").textContent = SUMMARY[b.subject];
+    pager.innerHTML = samplePages(b).join("");
+    pages = [...pager.children];
+    pages.forEach((p, i) => p.style.zIndex = pages.length - i);
+    showPage(0);
+
+    overlay.inert = false;
+    overlay.classList.add("open");
+    // La portada vuela desde la cuadrícula a su lugar en el visor (técnica FLIP).
+    if (!reduceMotion) {
+      const a = from.querySelector(".book").getBoundingClientRect(), z = pager.getBoundingClientRect();
+      pager.style.transition = "none";
+      pager.style.transformOrigin = "0 0";
+      pager.style.transform = `translate(${a.left - z.left}px, ${a.top - z.top}px) scale(${a.width / z.width})`;
+      pager.offsetWidth;
+      pager.style.transition = "transform .6s var(--ease-out)";
+      pager.style.transform = "";
+    }
+    document.getElementById("close").focus({ preventScroll: true });
+  }
+
+  function closeViewer() {
+    overlay.classList.remove("open");
+    overlay.inert = true;
+    trigger?.focus({ preventScroll: true });
+  }
+
+  document.getElementById("prev").onclick = () => showPage(page - 1);
+  document.getElementById("next").onclick = () => showPage(page + 1);
+  document.getElementById("close").onclick = closeViewer;
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeViewer(); });
+
+  // Tocar la página la pasa; deslizar a un lado u otro avanza o regresa.
+  let startX = null;
+  pager.addEventListener("pointerdown", e => startX = e.clientX);
+  pager.addEventListener("pointerup", e => {
+    if (startX === null) return;
+    const dx = e.clientX - startX; startX = null;
+    showPage(page + (Math.abs(dx) > 40 && dx > 0 ? -1 : 1));
+  });
+
+  overlay.addEventListener("keydown", e => {
+    if (e.key === "Escape") return closeViewer();
+    if (e.key === "ArrowRight") return showPage(page + 1);
+    if (e.key === "ArrowLeft") return showPage(page - 1);
+    if (e.key !== "Tab") return;
+    // Mantiene el foco dentro del visor.
+    const f = [...overlay.querySelectorAll("button:not(:disabled), a[href]")];
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+</script>
+</body>
+</html>
