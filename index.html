@@ -146,6 +146,12 @@
   .item:focus-visible .book { outline: 3px solid var(--blue-2); outline-offset: 6px; border-radius: 10px; }
   .item:focus-visible .book .cover { transform: rotateY(-28deg); }
   @media (hover: hover) { .item:hover .book .cover { transform: rotateY(-28deg); } }
+  /* En celular no hay mouse: el libro se entreabre al pasar por el centro de la pantalla
+     y se abre un poco más al tocarlo. */
+  @media (hover: none) {
+    .item.peek .book .cover { transform: rotateY(-28deg); }
+    .item:active .book .cover { transform: rotateY(-40deg); transition-duration: .2s; }
+  }
   .empty { color: var(--soft); font-weight: 600; padding: 24px 0; margin: 0; }
 
   /* Visor: portada y primeras páginas */
@@ -390,6 +396,14 @@
     reveal(visible, baseDelay);
   }
   applyFilters(.15);
+
+  // Celular: marca los libros que están en la franja central de la pantalla.
+  if (matchMedia("(hover: none)").matches) {
+    const peek = new IntersectionObserver(entries =>
+      entries.forEach(e => e.target.classList.toggle("peek", e.isIntersecting)),
+      { rootMargin: "-45% 0px -45% 0px" });
+    items.forEach(({ el }) => peek.observe(el));
+  }
 
   // Visor.
   const overlay = document.getElementById("overlay");
