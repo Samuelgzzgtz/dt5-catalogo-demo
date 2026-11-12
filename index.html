@@ -6,7 +6,8 @@
 <title>DT5 Editorial | Catálogo de libros</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Las fuentes cargan sin bloquear: el texto se ve de inmediato con la fuente del sistema y luego cambia. -->
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
   :root {
     --bg: #fbf7f1;
@@ -46,29 +47,29 @@
   .hero { display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 16px; min-height: 300px; }
   h1 { font: 600 clamp(38px, 6.4vw, 58px)/1.05 var(--display); margin: 0 0 16px; color: var(--blue); }
   h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .1em; margin-bottom: -.1em; }
-  h1 .w > span { display: inline-block; transform: translateY(110%); animation: rise .8s var(--ease-out) forwards; }
+  h1 .w > span { display: inline-block; transform: translateY(110%); animation: rise .6s var(--ease-out) forwards; }
   h1 em { font-style: normal; color: var(--orange); }
   .lead { font-size: 18px; color: var(--soft); max-width: 34ch; margin: 0 0 24px; }
   .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
   .lead, .hero-actions { opacity: 0; animation: fade .7s var(--ease-out) forwards; }
-  .lead { animation-delay: .45s; }
-  .hero-actions { animation-delay: .55s; }
+  .lead { animation-delay: .2s; }
+  .hero-actions { animation-delay: .28s; }
   @keyframes rise { to { transform: none; } }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
   .fan { position: relative; height: 260px; }
   .fan::before {
     content: ""; position: absolute; left: 50%; top: 50%; width: 220px; height: 220px; margin: -110px 0 0 -110px;
-    border-radius: 50%; background: #fde3cf; transform: scale(0); animation: pop .8s .3s var(--ease-spring) forwards;
+    border-radius: 50%; background: #fde3cf; transform: scale(0); animation: pop .6s .1s var(--ease-spring) forwards;
   }
   @keyframes pop { to { transform: scale(1); } }
   .fan .cover {
     position: absolute; left: 50%; top: 50%; width: 120px; height: 160px; margin: -80px 0 0 -60px; opacity: 0;
-    animation: deal .9s var(--ease-spring) forwards, float 6s ease-in-out infinite;
+    animation: deal .7s var(--ease-spring) forwards, float 6s ease-in-out infinite;
   }
-  .fan .cover:nth-child(1) { --r: -15deg; --x: -72px; animation-delay: .45s, 1.4s; }
-  .fan .cover:nth-child(2) { --r: 3deg;   --x: 0px;   animation-delay: .53s, 1.9s; z-index: 2; }
-  .fan .cover:nth-child(3) { --r: 17deg;  --x: 72px;  animation-delay: .61s, 2.4s; }
+  .fan .cover:nth-child(1) { --r: -15deg; --x: -72px; animation-delay: .15s, 1s; }
+  .fan .cover:nth-child(2) { --r: 3deg;   --x: 0px;   animation-delay: .22s, 1.5s; z-index: 2; }
+  .fan .cover:nth-child(3) { --r: 17deg;  --x: 72px;  animation-delay: .29s, 2s; }
   @keyframes deal {
     from { opacity: 0; transform: translate(0, 60px) rotate(0deg) scale(.8); }
     to   { opacity: 1; transform: translate(var(--x), 0) rotate(var(--r)); }
@@ -126,7 +127,7 @@
 
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 32px 24px; }
   .item { all: unset; cursor: pointer; display: block; opacity: 0; transform: translateY(20px) scale(.97); }
-  .item.in { opacity: 1; transform: none; transition: opacity .55s var(--ease-out), transform .55s var(--ease-out); }
+  .item.in { opacity: 1; transform: none; transition: opacity .45s var(--ease-out), transform .45s var(--ease-out); }
   .item[hidden] { display: none; }
   .book { perspective: 900px; aspect-ratio: 3 / 4; }
   .book-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform var(--t-enter) var(--ease-out); }
@@ -329,7 +330,7 @@
     });
     n.replaceWith(frag);
   });
-  title.querySelectorAll(".w > span").forEach((s, i) => s.style.animationDelay = `${i * 0.08}s`);
+  title.querySelectorAll(".w > span").forEach((s, i) => s.style.animationDelay = `${i * 0.05}s`);
 
   document.getElementById("fan").innerHTML = [books[2], books[8], books[13]].map(coverHTML).join("");
 
@@ -358,7 +359,7 @@
     list.forEach(({ el }) => el.classList.remove("in"));
     grid.offsetWidth;
     list.forEach(({ el }, i) => {
-      el.style.transitionDelay = `${baseDelay + Math.min(i, 12) * 0.04}s`;
+      el.style.transitionDelay = `${baseDelay + Math.min(i, 8) * 0.03}s`;
       el.classList.add("in");
     });
   }
@@ -386,7 +387,7 @@
     document.getElementById("empty").hidden = visible.length > 0;
     reveal(visible, baseDelay);
   }
-  applyFilters(.6);
+  applyFilters(.15);
 
   // Visor.
   const overlay = document.getElementById("overlay");
