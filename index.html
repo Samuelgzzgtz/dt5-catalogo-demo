@@ -4,11 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DT5 Editorial | Catálogo de libros</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Las fuentes cargan sin bloquear: el texto se ve de inmediato con la fuente del sistema y luego cambia. -->
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<!-- Fuentes servidas desde el mismo sitio (subconjunto latino de Google Fonts, licencia OFL):
+     evita conectarse a otros dominios, que en celular es lo que más tarda. -->
+<link rel="preload" href="fonts/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  @font-face { font-family: "Fredoka"; src: url(fonts/fredoka-latin.woff2) format("woff2"); font-weight: 300 700; font-display: swap; }
+  @font-face { font-family: "Nunito"; src: url(fonts/nunito-latin.woff2) format("woff2"); font-weight: 200 1000; font-display: swap; }
   :root {
     --bg: #fbf7f1;
     --surface: #ffffff;
