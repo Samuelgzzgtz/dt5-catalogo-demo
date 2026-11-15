@@ -1,17 +1,24 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-MX">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DT5 Editorial | Catálogo de libros</title>
+<title>DT5 Editorial | Libros de primaria para escuelas y docentes</title>
+<meta name="description" content="Hojea las primeras páginas de cada libro de primaria antes de pedirlo. DT5 trabaja con escuelas y docentes de todo México.">
+<meta name="theme-color" content="#1b3f8f">
+<meta property="og:title" content="DT5 Editorial">
+<meta property="og:description" content="Libros de primaria para escuelas y docentes de todo México. Hojea cada título antes de pedirlo.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <!-- Fuentes servidas desde el mismo sitio (subconjunto latino de Google Fonts, licencia OFL):
      evita conectarse a otros dominios, que en celular es lo que más tarda. -->
-<link rel="preload" href="fonts/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  @font-face { font-family: "Fredoka"; src: url(fonts/fredoka-latin.woff2) format("woff2"); font-weight: 300 700; font-display: swap; }
-  @font-face { font-family: "Nunito"; src: url(fonts/nunito-latin.woff2) format("woff2"); font-weight: 200 1000; font-display: swap; }
+  @font-face { font-family: "Fraunces"; src: url(fonts/fraunces-latin.woff2) format("woff2"); font-weight: 400 700; font-display: swap; }
+  @font-face { font-family: "Figtree"; src: url(fonts/figtree-latin.woff2) format("woff2"); font-weight: 400 800; font-display: swap; }
   :root {
+    /* Colores de marca: los mismos de siempre. */
     --bg: #fbf7f1;
     --surface: #ffffff;
     --ink: #1a1f2e;
@@ -19,10 +26,13 @@
     --line: #e7e1d8;
     --blue: #1b3f8f;
     --blue-2: #2563eb;
+    --blue-deep: #0f2557;
     --orange: #f97316;
+    --orange-light: #fb923c;
     --orange-text: #c2410c;
-    --display: "Fredoka", system-ui, sans-serif;
-    --body: "Nunito", system-ui, sans-serif;
+    --peach: #fde3cf;
+    --display: "Fraunces", Georgia, "Times New Roman", serif;
+    --body: "Figtree", system-ui, sans-serif;
     /* Movimiento: entrar despacio, salir más rápido. */
     --ease-out: cubic-bezier(.22, 1, .36, 1);
     --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
@@ -31,27 +41,39 @@
     --t-exit: .3s;
   }
   * { box-sizing: border-box; }
-  html, body { background: transparent; margin: 0; }
-  .site {
-    background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body);
-    border-radius: var(--radius, 12px); padding: 24px 32px 48px; overflow: hidden; position: relative;
-  }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 var(--body); overflow-x: hidden; }
+  .wrap { width: min(1120px, 100% - 48px); margin-inline: auto; }
   :focus-visible { outline: 3px solid var(--blue-2); outline-offset: 3px; border-radius: 6px; }
+  .on-blue :focus-visible { outline-color: #fff; }
   button { font: inherit; color: inherit; }
+  [id] { scroll-margin-top: 24px; }
 
-  /* Encabezado */
-  .top { display: flex; align-items: center; justify-content: space-between; }
-  .brand { font: 600 28px var(--display); color: var(--blue); text-decoration: none; }
-  .brand span { color: var(--orange); }
-  .top .link { color: var(--blue); font-weight: 700; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+  /* Logotipo: libro abierto de dos tonos + DT5. */
+  .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--blue); min-height: 44px; }
+  .brand .mark { width: 34px; height: 34px; flex: none; }
+  /* Las piezas viven dentro del <symbol>; el color llega por variables heredadas. */
+  #mark .l { fill: var(--mark-l, var(--blue)); stroke: var(--mark-l, var(--blue)); }
+  #mark .r { fill: var(--orange); stroke: var(--orange); }
+  #mark path { stroke-width: 2.5; stroke-linejoin: round; }
+  .brand .word { font: 700 28px/1 var(--display); letter-spacing: -.02em; }
+  .brand .word b { font-weight: inherit; color: var(--orange); }
+  .brand small { font: 600 12px/1.2 var(--body); letter-spacing: .08em; text-transform: uppercase; opacity: .75; border-left: 1.5px solid currentColor; padding-left: 10px; }
+  .on-blue .brand { color: #fff; --mark-l: #fff; }
+  .on-blue .brand .word b { color: var(--orange-light); }
 
-  /* Hero */
-  .hero { display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 16px; min-height: 300px; }
-  h1 { font: 600 clamp(38px, 6.4vw, 58px)/1.05 var(--display); margin: 0 0 16px; color: var(--blue); }
-  h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .1em; margin-bottom: -.1em; }
+  /* Franja azul: encabezado y hero */
+  .band { background: var(--blue); color: #fff; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
+  .nav { display: flex; align-items: center; gap: 28px; }
+  .nav a:not(.btn) { color: rgba(255,255,255,.85); font-weight: 600; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; transition: color var(--t-fast); }
+
+  .hero { display: grid; grid-template-columns: 1.15fr 1fr; align-items: center; gap: 24px; padding: 36px 0 72px; }
+  h1 { font: 600 clamp(40px, 6vw, 66px)/1.04 var(--display); letter-spacing: -.02em; margin: 0 0 20px; }
+  h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .14em; margin-bottom: -.14em; }
   h1 .w > span { display: inline-block; transform: translateY(110%); animation: rise .6s var(--ease-out) forwards; }
-  h1 em { font-style: normal; color: var(--orange); }
-  .lead { font-size: 18px; color: var(--soft); max-width: 34ch; margin: 0 0 24px; }
+  h1 em { font-style: normal; color: var(--orange-light); }
+  .lead { font-size: 19px; color: rgba(255,255,255,.84); max-width: 40ch; margin: 0 0 28px; }
   .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
   .lead, .hero-actions { opacity: 0; animation: fade .7s var(--ease-out) forwards; }
   .lead { animation-delay: .2s; }
@@ -59,19 +81,21 @@
   @keyframes rise { to { transform: none; } }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-  .fan { position: relative; height: 260px; }
+  .fan { position: relative; height: 300px; }
   .fan::before {
-    content: ""; position: absolute; left: 50%; top: 50%; width: 220px; height: 220px; margin: -110px 0 0 -110px;
-    border-radius: 50%; background: #fde3cf; transform: scale(0); animation: pop .6s .1s var(--ease-spring) forwards;
+    content: ""; position: absolute; left: 50%; top: 50%; width: 260px; height: 260px; margin: -130px 0 0 -130px;
+    border-radius: 50%; background: var(--peach); transform: scale(0); animation: pop .6s .1s var(--ease-spring) forwards;
   }
   @keyframes pop { to { transform: scale(1); } }
   .fan .cover {
-    position: absolute; left: 50%; top: 50%; width: 120px; height: 160px; margin: -80px 0 0 -60px; opacity: 0;
+    position: absolute; left: 50%; top: 50%; width: 138px; height: 184px; margin: -92px 0 0 -69px; opacity: 0;
+    /* En px: un % aquí se mediría contra el ancho del abanico y encogería el texto de la portada. */
+    padding: 17px 15px;
     animation: deal .7s var(--ease-spring) forwards, float 6s ease-in-out infinite;
   }
-  .fan .cover:nth-child(1) { --r: -15deg; --x: -72px; animation-delay: .15s, 1s; }
+  .fan .cover:nth-child(1) { --r: -15deg; --x: -84px; animation-delay: .15s, 1s; }
   .fan .cover:nth-child(2) { --r: 3deg;   --x: 0px;   animation-delay: .22s, 1.5s; z-index: 2; }
-  .fan .cover:nth-child(3) { --r: 17deg;  --x: 72px;  animation-delay: .29s, 2s; }
+  .fan .cover:nth-child(3) { --r: 17deg;  --x: 84px;  animation-delay: .29s, 2s; }
   @keyframes deal {
     from { opacity: 0; transform: translate(0, 60px) rotate(0deg) scale(.8); }
     to   { opacity: 1; transform: translate(var(--x), 0) rotate(var(--r)); }
@@ -80,14 +104,21 @@
 
   /* Botones */
   .btn {
-    display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px;
+    display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 24px;
     border: 0; border-radius: 999px; font: 700 16px var(--body); text-decoration: none; cursor: pointer;
     transition: transform var(--t-fast) var(--ease-spring);
   }
   .btn:active { transform: scale(.96); }
   .btn.primary { background: var(--orange); color: var(--ink); }
   .btn.outline { background: transparent; color: var(--blue); box-shadow: inset 0 0 0 2px var(--blue); }
+  .on-blue .btn.outline { color: #fff; box-shadow: inset 0 0 0 2px rgba(255,255,255,.7); }
+  .btn.small { min-height: 44px; padding: 0 18px; font-size: 15px; }
   .btn svg { width: 20px; height: 20px; flex: none; }
+
+  /* Datos del catálogo, bajo el hero */
+  .facts { list-style: none; margin: 0 auto; padding: 28px 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; border-bottom: 1px solid var(--line); }
+  .facts strong { display: block; font: 600 30px/1.1 var(--display); color: var(--blue); letter-spacing: -.01em; }
+  .facts span { color: var(--soft); font-size: 15px; }
 
   /* Portada de libro: se usa en el hero, la cuadrícula y el visor. */
   .cover {
@@ -101,16 +132,22 @@
     content: ""; position: absolute; right: -18%; top: 22%; width: 62%; aspect-ratio: 1; border-radius: 50%;
     background: var(--dot); opacity: .9;
   }
-  .cover .logo { position: relative; z-index: 1; font: 600 11cqi/1 var(--display); }
-  .cover .grade { position: relative; z-index: 1; font: 600 42cqi/.9 var(--display); }
+  .cover .logo { position: relative; z-index: 1; font: 700 11cqi/1 var(--display); letter-spacing: -.01em; }
+  .cover .grade { position: relative; z-index: 1; font: 600 44cqi/.9 var(--display); letter-spacing: -.03em; }
   .cover .subject { position: relative; z-index: 1; font: 700 11cqi/1.1 var(--body); }
 
+  /* Secciones */
+  .section { padding: 64px 0; }
+  h2 { font: 600 clamp(30px, 4vw, 40px)/1.1 var(--display); letter-spacing: -.015em; color: var(--blue); margin: 0; }
+  .section-lead { color: var(--soft); max-width: 52ch; margin: 12px 0 0; }
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s var(--ease-out), transform .6s var(--ease-out); }
+  .reveal.in { opacity: 1; transform: none; }
+
   /* Catálogo */
-  .catalog-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 40px 0 8px; }
-  h2 { font: 600 30px/1.1 var(--display); color: var(--blue); margin: 0; }
+  .catalog-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
   .count { color: var(--soft); font-weight: 600; }
-  .filters { display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
-  .subjects { display: flex; flex-wrap: wrap; gap: 0 20px; }
+  .filters { display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+  .subjects { display: flex; flex-wrap: wrap; gap: 0 22px; }
   .subjects button {
     position: relative; background: none; border: 0; padding: 0; min-height: 48px; cursor: pointer;
     font-weight: 700; color: var(--soft); transition: color var(--t-fast);
@@ -127,7 +164,7 @@
     border-radius: 10px; min-height: 44px; padding: 0 12px; cursor: pointer;
   }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 32px 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 36px 28px; }
   .item { all: unset; cursor: pointer; display: block; opacity: 0; transform: translateY(20px) scale(.97); }
   .item.in { opacity: 1; transform: none; transition: opacity .45s var(--ease-out), transform .45s var(--ease-out); }
   .item[hidden] { display: none; }
@@ -140,7 +177,7 @@
   }
   .book .cover { position: absolute; inset: 0; transform-origin: left center; transition: transform .6s var(--ease-out); backface-visibility: hidden; }
   .meta { margin-top: 12px; }
-  .meta strong { display: block; font: 600 17px/1.2 var(--display); }
+  .meta strong { display: block; font: 600 18px/1.2 var(--display); }
   .meta span { font-size: 14px; color: var(--soft); }
   .item:focus-visible { outline: none; }
   .item:focus-visible .book { outline: 3px solid var(--blue-2); outline-offset: 6px; border-radius: 10px; }
@@ -153,6 +190,21 @@
     .item:active .book .cover { transform: rotateY(-40deg); transition-duration: .2s; }
   }
   .empty { color: var(--soft); font-weight: 600; padding: 24px 0; margin: 0; }
+
+  /* Cómo pedir */
+  .how { border-top: 1px solid var(--line); }
+  .steps { list-style: none; padding: 0; margin: 36px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; counter-reset: step; }
+  .steps li { border-top: 2px solid var(--blue); padding-top: 18px; counter-increment: step; }
+  .steps li::before { content: counter(step); display: block; font: 600 46px/1 var(--display); color: var(--orange-text); margin-bottom: 12px; }
+  .steps h3 { font: 600 22px/1.2 var(--display); color: var(--blue); margin: 0 0 8px; }
+  .steps p { margin: 0; color: var(--soft); }
+
+  /* Contacto y pie */
+  .closing { background: var(--blue-deep); color: #fff; }
+  .contact { display: flex; align-items: center; justify-content: space-between; gap: 24px 48px; flex-wrap: wrap; padding: 64px 0; }
+  .contact h2 { color: #fff; }
+  .contact p { color: rgba(255,255,255,.8); max-width: 46ch; margin: 12px 0 0; }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; padding: 20px 0 28px; border-top: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.7); font-size: 14px; }
 
   /* Visor: portada y primeras páginas */
   .overlay {
@@ -204,7 +256,7 @@
   .overlay.open .info > *:nth-child(4) { transition-delay: .3s; }
   .overlay.open .info > *:nth-child(5) { transition-delay: .35s; }
   .info .kicker { color: var(--orange-text); font-weight: 700; margin: 0; }
-  .info h3 { font: 600 32px/1.1 var(--display); color: var(--blue); margin: 0; }
+  .info h3 { font: 600 34px/1.1 var(--display); letter-spacing: -.015em; color: var(--blue); margin: 0; }
   .info p { margin: 0; color: var(--soft); }
   .info .hint { font-size: 14px; }
   .info .btn { align-self: flex-start; margin-top: 8px; }
@@ -219,37 +271,70 @@
     .btn:hover, .pager-nav button:not(:disabled):hover { transform: translateY(-2px); }
     .close:hover { transform: rotate(90deg); }
     .subjects button:hover { color: var(--blue); }
+    .nav a:not(.btn):hover { color: #fff; }
   }
 
-  @media (max-width: 600px) {
-    .site { padding: 20px 18px 36px; }
-    .hero { grid-template-columns: 1fr; }
-    .fan { height: 220px; order: -1; }
+  @media (max-width: 860px) {
+    .facts { grid-template-columns: repeat(2, 1fr); }
+    .steps { grid-template-columns: 1fr; gap: 28px; }
+  }
+  @media (max-width: 720px) {
+    .wrap { width: min(1120px, 100% - 36px); }
+    .nav a:not(.btn) { display: none; }
+    .brand small { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 20px 0 48px; }
+    .fan { height: 250px; }
+    .fan::before { width: 220px; height: 220px; margin: -110px 0 0 -110px; }
+    .fan .cover { width: 120px; height: 160px; margin: -80px 0 0 -60px; padding: 14px 13px; }
+    .fan .cover:nth-child(1) { --x: -72px; }
+    .fan .cover:nth-child(3) { --x: 72px; }
+    .lead { font-size: 18px; }
+    .facts strong { font-size: 26px; }
+    .section { padding: 48px 0; }
     .filters { flex-direction: column; align-items: stretch; }
     .subjects { gap: 0 16px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 30px 20px; }
+    .contact { padding: 48px 0; }
     .panel { grid-template-columns: 1fr; padding: 64px 20px 20px; gap: 16px; }
     .pager { width: min(100%, 280px); margin: 0 auto; }
-    .info h3 { font-size: 26px; }
+    .info h3 { font-size: 28px; }
   }
   @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
     *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
   }
 </style>
 </head>
 <body>
-<div class="site">
-  <header class="top">
-    <a class="brand" href="#" aria-label="DT5 inicio">DT<span>5</span></a>
-    <a class="link" href="#">Pedir informes</a>
+<!-- Símbolo del logotipo: se reutiliza en el encabezado y el pie. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 40 40">
+    <path class="l" d="M5 10 18 13.5v18L5 28Z"/>
+    <path class="r" d="M22 13.5 35 10v18l-13 3.5Z"/>
+  </symbol>
+</svg>
+
+<div class="band on-blue">
+  <header class="top wrap">
+    <a class="brand" href="#" aria-label="DT5 Editorial, inicio">
+      <svg class="mark" aria-hidden="true"><use href="#mark"/></svg>
+      <span class="word">DT<b>5</b></span>
+      <small>Editorial educativa</small>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#libros">Catálogo</a>
+      <a href="#como">Cómo pedir</a>
+      <a class="btn outline small" href="#contacto" data-contact>Pedir informes</a>
+    </nav>
   </header>
 
-  <section class="hero">
+  <section class="hero wrap">
     <div>
-      <h1 id="title">Libros para aprender <em>grado a grado</em></h1>
-      <p class="lead">Mira la portada y hojea las primeras páginas de cada libro antes de pedirlo.</p>
+      <h1 id="title">Libros de primaria listos para <em>tu salón</em></h1>
+      <p class="lead">Hojea las primeras páginas de cada título antes de decidir. Trabajamos con escuelas y docentes de todo México.</p>
       <div class="hero-actions">
-        <a class="btn outline" href="#libros">Ver libros</a>
-        <a class="btn primary" href="#">
+        <a class="btn primary" href="#libros">Ver el catálogo</a>
+        <a class="btn outline" href="#contacto" data-contact>
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a17 17 0 0 1-1.7-.6 13.4 13.4 0 0 1-5.1-4.5c-.4-.5-1.1-1.6-1.1-3s.8-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2.1 1c.3.2.5.2.6.4 0 .1 0 .7-.2 1.3Z"/></svg>
           Pedir informes
         </a>
@@ -257,49 +342,102 @@
     </div>
     <div class="fan" id="fan" aria-hidden="true"></div>
   </section>
+</div>
 
-  <div class="catalog-head">
-    <h2 id="libros">Nuestros libros</h2>
-    <span class="count" id="count" aria-live="polite"></span>
-  </div>
-  <div class="filters">
-    <div class="subjects" id="subjects" role="group" aria-label="Materia"></div>
-    <label class="grade-filter">Grado
-      <select id="grade">
-        <option value="">Todos</option>
-        <option value="1">1° primaria</option><option value="2">2° primaria</option><option value="3">3° primaria</option>
-        <option value="4">4° primaria</option><option value="5">5° primaria</option><option value="6">6° primaria</option>
-      </select>
-    </label>
-  </div>
-  <div class="grid" id="grid"></div>
-  <p class="empty" id="empty" hidden>Todavía no hay libros con esos filtros.</p>
+<main>
+  <ul class="facts wrap">
+    <li><strong id="f-books"></strong><span>libros para hojear</span></li>
+    <li><strong id="f-subjects"></strong><span>materias</span></li>
+    <li><strong>1° a 6°</strong><span>de primaria</span></li>
+    <li><strong>Todo México</strong><span>atendemos escuelas de cualquier estado</span></li>
+  </ul>
 
-  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="v-title" inert>
-    <div class="panel">
-      <button class="close" id="close" aria-label="Cerrar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
-      </button>
-      <div>
-        <div class="pager" id="pager"></div>
-        <div class="pager-nav">
-          <button id="prev" aria-label="Página anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-          <span class="pos" id="pos" aria-live="polite"></span>
-          <button id="next" aria-label="Página siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
-        </div>
+  <section class="section wrap">
+    <div class="catalog-head">
+      <h2 id="libros">Catálogo</h2>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+    <div class="filters">
+      <div class="subjects" id="subjects" role="group" aria-label="Materia"></div>
+      <label class="grade-filter">Grado
+        <select id="grade">
+          <option value="">Todos</option>
+          <option value="1">1° primaria</option><option value="2">2° primaria</option><option value="3">3° primaria</option>
+          <option value="4">4° primaria</option><option value="5">5° primaria</option><option value="6">6° primaria</option>
+        </select>
+      </label>
+    </div>
+    <div class="grid" id="grid"></div>
+    <p class="empty" id="empty" hidden>Todavía no hay libros con esos filtros.</p>
+  </section>
+
+  <section class="section how">
+    <div class="wrap">
+      <h2 id="como" class="reveal">Cómo pedir para tu escuela</h2>
+      <p class="section-lead reveal">Tres pasos, sin compromiso. Primero revisas el material y después decides.</p>
+      <ol class="steps">
+        <li class="reveal"><h3>Hojea los libros</h3><p>Abre cualquier título del catálogo y revisa la portada, el índice y las primeras lecciones.</p></li>
+        <li class="reveal"><h3>Cuéntanos de tu grupo</h3><p>Dinos qué grados y materias necesitas y cuántos alumnos son.</p></li>
+        <li class="reveal"><h3>Recibe tu propuesta</h3><p>Te enviamos la cotización y coordinamos la entrega en tu escuela, en cualquier estado.</p></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<div class="closing on-blue">
+  <section class="contact wrap" id="contacto">
+    <div>
+      <h2>¿Buscas libros para tu escuela?</h2>
+      <p>Escríbenos con el grado y la materia que te interesan. Te respondemos con la información y los siguientes pasos.</p>
+    </div>
+    <a class="btn primary" href="#contacto" data-contact>
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a17 17 0 0 1-1.7-.6 13.4 13.4 0 0 1-5.1-4.5c-.4-.5-1.1-1.6-1.1-3s.8-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .7.5l.9 2.2c.1.2.1.4 0 .6l-.4.6-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2.1 1c.3.2.5.2.6.4 0 .1 0 .7-.2 1.3Z"/></svg>
+      Pedir informes
+    </a>
+  </section>
+  <footer class="foot wrap">
+    <a class="brand" href="#" aria-label="DT5 Editorial, inicio">
+      <svg class="mark" aria-hidden="true"><use href="#mark"/></svg>
+      <span class="word">DT<b>5</b></span>
+    </a>
+    <span>Editorial educativa · México</span>
+    <span>© 2026 DT5</span>
+  </footer>
+</div>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="v-title" inert>
+  <div class="panel">
+    <button class="close" id="close" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <div>
+      <div class="pager" id="pager"></div>
+      <div class="pager-nav">
+        <button id="prev" aria-label="Página anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <span class="pos" id="pos" aria-live="polite"></span>
+        <button id="next" aria-label="Página siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
-      <div class="info">
-        <p class="kicker" id="v-kicker"></p>
-        <h3 id="v-title"></h3>
-        <p id="v-sum"></p>
-        <p class="hint">Toca la página, deslízala o usa las flechas para hojear.</p>
-        <a class="btn primary" href="#">Pedir este libro</a>
-      </div>
+    </div>
+    <div class="info">
+      <p class="kicker" id="v-kicker"></p>
+      <h3 id="v-title"></h3>
+      <p id="v-sum"></p>
+      <p class="hint">Toca la página, deslízala o usa las flechas para hojear.</p>
+      <a class="btn primary" id="v-order" href="#contacto">Pedir este libro</a>
     </div>
   </div>
 </div>
 
 <script>
+  // CONTACTO: pon aquí el WhatsApp de DT5 con clave de país y sin espacios (ej. "5215512345678").
+  // Mientras esté vacío, los botones de "Pedir informes" solo bajan a la sección de contacto.
+  const WHATSAPP = "";
+  const contactHref = text => WHATSAPP ? `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}` : "#contacto";
+  document.querySelectorAll("[data-contact]").forEach(a => {
+    a.href = contactHref("Hola, quiero informes de los libros DT5 para mi escuela.");
+    if (WHATSAPP) { a.target = "_blank"; a.rel = "noopener"; }
+  });
+
   // Colores por materia dentro de la paleta DT5 (azul y naranja como base).
   const SUBJECTS = {
     "Matemáticas": { c1: "#2563eb", c2: "#1b3f8f", dot: "#f97316" },
@@ -319,6 +457,8 @@
   };
   const books = Object.entries(GRADES).flatMap(([s, gs]) => gs.map(g => ({ subject: s, grade: g, title: `${s} ${g}°` })));
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.getElementById("f-books").textContent = books.length;
+  document.getElementById("f-subjects").textContent = Object.keys(SUBJECTS).length;
 
   const coverVars = b => { const c = SUBJECTS[b.subject]; return `--c1:${c.c1};--c2:${c.c2};--dot:${c.dot}`; };
   const coverBody = b => `<span class="logo">DT5</span><span class="grade">${b.grade}°</span><span class="subject">${b.subject}</span>`;
@@ -405,9 +545,21 @@
     items.forEach(({ el }) => peek.observe(el));
   }
 
+  // Las secciones de abajo aparecen al llegar a ellas.
+  const seen = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("in");
+    seen.unobserve(e.target);
+  }), { rootMargin: "0px 0px -10% 0px" });
+  document.querySelectorAll(".reveal").forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 3) * 0.08}s`;
+    seen.observe(el);
+  });
+
   // Visor.
   const overlay = document.getElementById("overlay");
   const pager = document.getElementById("pager");
+  const order = document.getElementById("v-order");
   let trigger = null, page = 0, pages = [];
 
   // Páginas de muestra. En la versión real son imágenes de las primeras páginas del PDF.
@@ -434,6 +586,8 @@
     document.getElementById("v-kicker").textContent = `${b.subject}, ${b.grade}° de primaria`;
     document.getElementById("v-title").textContent = b.title;
     document.getElementById("v-sum").textContent = SUMMARY[b.subject];
+    order.href = contactHref(`Hola, quiero informes del libro ${b.title} de primaria de DT5.`);
+    if (WHATSAPP) { order.target = "_blank"; order.rel = "noopener"; }
     pager.innerHTML = samplePages(b).join("");
     pages = [...pager.children];
     pages.forEach((p, i) => p.style.zIndex = pages.length - i);
@@ -463,6 +617,8 @@
   document.getElementById("prev").onclick = () => showPage(page - 1);
   document.getElementById("next").onclick = () => showPage(page + 1);
   document.getElementById("close").onclick = closeViewer;
+  // Sin WhatsApp configurado, "Pedir este libro" cierra el visor y baja a contacto.
+  order.addEventListener("click", () => { if (!WHATSAPP) closeViewer(); });
   overlay.addEventListener("click", e => { if (e.target === overlay) closeViewer(); });
 
   // Tocar la página la pasa; deslizar a un lado u otro avanza o regresa.
