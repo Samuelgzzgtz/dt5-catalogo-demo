@@ -136,6 +136,9 @@ function abrirLibro(libro, desde) {
   visor.querySelector('#v-title').textContent = libro.titulo;
   visor.querySelector('[data-v-facts]').textContent = `${libro.semestre}.º semestre · ${libro.paginas} páginas de muestra`;
   visor.querySelector('[data-v-summary]').textContent = libro.resumen;
+  const descarga = visor.querySelector('[data-download]');
+  descarga.href = `assets/libros/${libro.id}/muestra.pdf`;
+  descarga.download = `DT5 - ${libro.titulo} (muestra).pdf`;
   visor.querySelector('[data-total]').textContent = `de ${libro.paginas}`;
   paginaSelect.replaceChildren(...Array.from({ length: libro.paginas }, (_, n) => new Option(n + 1, n + 1)));
   mostrarPagina(1);
