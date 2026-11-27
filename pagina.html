@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Editorial DT5 | Libros de bachillerato</title>
+<meta name="description" content="Catálogo de bachillerato de Editorial DT5. Encuentra los libros por semestre y hojea sus páginas de muestra.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<meta property="og:site_name" content="Editorial DT5">
+<meta property="og:title" content="Catálogo Editorial DT5">
+<meta property="og:description" content="Libros de bachillerato por semestre. Explora las portadas y hojea las páginas de muestra.">
+<meta property="og:url" content="https://dt5-mockups.vercel.app/">
+<meta property="og:image" content="https://dt5-mockups.vercel.app/assets/portada-catalogo-dt5.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Catálogo Editorial DT5 con tres portadas de libros sobre fondo azul.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=erode@400,500,600&display=swap" rel="stylesheet">
+<script defer src="catalogo-libros.js"></script>
+<script defer src="pagina.js"></script>
+<style>
+  :root {
+    --bg: #f8f9fb;
+    --ink: #141b2e;
+    --blue: #1b2f6b;
+    --sky: #9ec8ec;
+    --accent: #f2661f;
+    --accent-hover: #ff7a36;
+    --white: #fff;
+    --font: 'Erode', Georgia, serif;
+    --margin: clamp(20px, 4vw, 64px);
+    --bar: 72px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-padding-top: var(--bar); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.125rem/1.45 var(--font); }
+  h1, h2, p { margin: 0; }
+  h1, h2 { font-weight: 500; line-height: 1; letter-spacing: -0.035em; }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+  :focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+  .wrap { padding-inline: var(--margin); }
+  .skip { position: absolute; top: 8px; left: var(--margin); transform: translateY(-150%); z-index: 3; padding: 8px 12px; background: var(--bg); }
+  .skip:focus { transform: none; }
+  .bar { position: sticky; top: 0; z-index: 2; height: var(--bar); display: flex; gap: clamp(16px, 3vw, 36px); align-items: center; background: var(--bg); }
+  .wordmark { margin-right: auto; color: var(--blue); font: 600 1.625rem/1 var(--font); text-decoration: none; }
+  .wordmark b { color: var(--accent); font-weight: inherit; }
+  .bar nav a { display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: .22em; }
+  .button { display: inline-flex; min-height: 48px; padding: 0 22px; align-items: center; justify-content: center; background: var(--accent); color: var(--ink); text-decoration: none; font-weight: 600; }
+  @media (hover: hover) {
+    .button:hover { background: var(--accent-hover); }
+    .editions a:hover strong, .rows a:hover strong { text-decoration: underline; text-underline-offset: .16em; }
+  }
+  .hero { display: grid; justify-items: center; align-content: start; text-align: center; position: relative; isolation: isolate; min-height: max(560px, calc(100svh - var(--bar))); padding-top: clamp(46px, 7vh, 82px); background: var(--sky); }
+  .hero__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 78%; filter: brightness(1.19) saturate(.92); z-index: -1; }
+  .hero h1 { font-size: clamp(3rem, 2rem + 6vw, 7.25rem); }
+  .line { display: block; }
+  .slot { display: inline-flex; height: .74em; vertical-align: -.04em; gap: .035em; margin-left: .18em; padding: .04em; background: var(--blue); }
+  .slot img { height: 100%; width: auto; }
+  .hero p { margin-top: 26px; max-width: 28em; font-size: clamp(1.125rem, 1rem + 1vw, 1.55rem); line-height: 1.26; text-wrap: balance; }
+
+  .editions { padding-block: clamp(60px, 10vw, 136px); background: var(--blue); color: var(--white); }
+  h2 { font-size: clamp(2.65rem, 1.8rem + 4.2vw, 5.5rem); }
+  .editions ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 5vw, 76px); max-width: 70rem; margin: clamp(32px, 5vw, 64px) auto 0; padding: 0; list-style: none; }
+  .editions a { display: grid; gap: 8px; text-decoration: none; }
+  .cover { width: 100%; aspect-ratio: 3 / 4; object-fit: contain; object-position: left bottom; margin-bottom: 8px; }
+  .editions span { color: var(--sky); font-size: 1rem; }
+  .editions strong { font-weight: 500; font-size: clamp(1.35rem, 1rem + 1.5vw, 2.1rem); line-height: 1.1; }
+  .semesters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 6vw, 100px); padding-block: clamp(60px, 10vw, 136px); background: var(--accent); }
+  .rows { margin: 0; padding: 0; list-style: none; }
+  .rows li { border-top: 1px solid currentColor; }
+  .rows li:last-child { border-bottom: 1px solid currentColor; }
+  .rows a { min-height: 58px; display: flex; gap: 8px 20px; flex-wrap: wrap; align-items: center; justify-content: space-between; padding-block: 10px; text-decoration: none; }
+  .rows strong { font-size: clamp(1.25rem, 1rem + 1vw, 1.65rem); font-weight: 500; }
+  .foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 28px; background: var(--blue); color: var(--white); }
+  .foot small { font-size: .875rem; }
+
+  @media (max-width: 640px) {
+    :root { --bar: 64px; }
+    .bar .button { padding-inline: 12px; min-height: 44px; }
+    .hero { min-height: clamp(450px, 74svh, 560px); }
+    .hero h1 { font-size: clamp(2.65rem, 10vw, 3.75rem); }
+    .hero__photo { object-position: 55% 75%; }
+    .semesters { grid-template-columns: 1fr; }
+    .editions ul { gap: 14px; }
+    .editions strong { font-size: clamp(1rem, 4vw, 1.3rem); }
+    .editions span { font-size: .875rem; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<header class="bar wrap">
+  <a class="wordmark" href="pagina.html" aria-label="DT5, inicio">DT<b>5</b></a>
+  <nav aria-label="Principal"><a href="#semestres">Semestres</a></nav>
+  <a class="button" href="catalogo.html">Ver catálogo</a>
+</header>
+<main id="contenido">
+  <section class="hero wrap" aria-labelledby="titulo">
+    <img class="hero__photo" src="assets/cerro-de-la-silla-on-a-warm.jpg" width="1920" height="1080" alt="El Cerro de la Silla en Monterrey" fetchpriority="high">
+    <h1 id="titulo">
+      <span class="line">Libros de<span class="slot" aria-hidden="true">
+        <img src="assets/libros/ciencias-naturales-ii/portada.webp" alt="">
+        <img src="assets/libros/pensamiento-matematico-iv/portada.webp" alt="">
+        <img src="assets/libros/temas-selectos-de-matematicas/portada.webp" alt="">
+      </span></span>
+      <span class="line">bachillerato</span>
+    </h1>
+    <p>Elige tu semestre y hojea las páginas de muestra de cada libro.</p>
+  </section>
+  <section class="editions wrap" aria-labelledby="muestras">
+    <h2 id="muestras">Hojea una muestra</h2>
+    <ul data-editions></ul>
+    <noscript><a href="catalogo.html">Ir al catálogo</a></noscript>
+  </section>
+  <section class="semesters wrap" id="semestres" aria-labelledby="semestres-titulo">
+    <h2 id="semestres-titulo">Catálogo por semestre</h2>
+    <ul class="rows" data-rows></ul>
+  </section>
+</main>
+<footer class="foot wrap">
+  <p>Editorial DT5</p>
+  <small><a href="https://commons.wikimedia.org/wiki/File:Cerro_de_La_Silla_on_a_warm_day_(Unsplash).jpg">Cerro de la Silla</a> · Hafid Davila, CC0</small>
+</footer>
+</body>
+</html>
